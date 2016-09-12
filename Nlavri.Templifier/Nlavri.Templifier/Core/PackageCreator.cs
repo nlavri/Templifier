@@ -5,9 +5,8 @@ namespace Nlavri.Templifier.Core
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
-    using Impl.Packager.Builders;
-    using Impl.Packages;
-    using Interfaces.Packager.Processors;
+    using Builders;
+    using Processors;
 
     #endregion
 
@@ -15,7 +14,6 @@ namespace Nlavri.Templifier.Core
     {
         #region Fields
 
-        private readonly ICleanUpProcessor cleanUpProcessor;
         private readonly ClonePackageBuilder clonePackageBuilder;
         private readonly ManifestBuilder manifestBuilder;
         private readonly TokenisedPackageBuilder packageTokeniser;
@@ -24,12 +22,10 @@ namespace Nlavri.Templifier.Core
         #endregion
 
         public PackageCreator(
-            ICleanUpProcessor cleanUpProcessor,
             ClonePackageBuilder clonePackageBuilder,
             TokenisedPackageBuilder packageTokeniser,
             ManifestBuilder manifestBuilder)
         {
-            this.cleanUpProcessor = cleanUpProcessor;
             this.clonePackageBuilder = clonePackageBuilder;
             this.packageTokeniser = packageTokeniser;
             this.manifestBuilder = manifestBuilder;
@@ -53,8 +49,8 @@ namespace Nlavri.Templifier.Core
                 : options.PackagePath;
             ZipFile.CreateFromDirectory(tokenizedPackage.Path, resultFile, CompressionLevel.Optimal, false);
 
-            this.cleanUpProcessor.Process(clonedPackage.Path);
-            this.cleanUpProcessor.Process(tokenizedPackage.Path);
+            IoHelper.DeleteDirectory(clonedPackage.Path);
+            IoHelper.DeleteDirectory(tokenizedPackage.Path);
         }
     }
 }

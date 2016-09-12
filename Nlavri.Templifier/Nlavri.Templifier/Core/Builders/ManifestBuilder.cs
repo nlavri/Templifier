@@ -1,4 +1,4 @@
-﻿namespace Nlavri.Templifier.Impl.Packager.Builders
+﻿namespace Nlavri.Templifier.Core.Builders
 {
     #region Using Directives
 
@@ -7,23 +7,15 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Interfaces.Packager.Processors;
-    using Packages;
+    using Processors;
 
     #endregion
 
     public class ManifestBuilder 
     {
-        private readonly IArtefactProcessor artefactProcessor;
-
-        public ManifestBuilder(IArtefactProcessor artefactProcessor)
-        {
-            this.artefactProcessor = artefactProcessor;
-        }
-
         public Manifest Build(string packageName, string sourcePath, IList<string> tokens)
         {
-            var files = this.artefactProcessor.RetrieveFiles(sourcePath);
+            var files = IoHelper.GetFiles(sourcePath);
 
             var manifest = new Manifest
             {

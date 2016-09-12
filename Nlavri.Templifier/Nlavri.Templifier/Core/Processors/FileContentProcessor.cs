@@ -1,14 +1,13 @@
-namespace Nlavri.Templifier.Impl.Packager.Processors
+namespace Nlavri.Templifier.Core.Processors
 {
     #region Using Directives
 
     using System.IO;
     using System.Text;
-    using Interfaces.Packager.Processors;
 
     #endregion
 
-    public class FileContentProcessor : IFileContentProcessor
+    public class FileContentProcessor
     {
         public string ReadContents(string path)
         {

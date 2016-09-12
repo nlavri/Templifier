@@ -1,24 +1,21 @@
-﻿namespace Nlavri.Templifier.Impl.Packager.Builders
+﻿namespace Nlavri.Templifier.Core.Builders
 {
     #region Using Directives
 
     using System.Collections.Concurrent;
     using System.IO;
     using System.Threading.Tasks;
-    using Interfaces.Packager.Processors;
     using Newtonsoft.Json;
-    using Packages;
+    using Processors;
 
     #endregion
 
     public class ClonePackageBuilder
     {
-        private readonly ICloneFileProcessor cloneFileProcessor;
         private readonly ManifestBuilder manifestBuilder;
 
-        public ClonePackageBuilder(ICloneFileProcessor cloneFileProcessor, ManifestBuilder manifestBuilder)
+        public ClonePackageBuilder(ManifestBuilder manifestBuilder)
         {
-            this.cloneFileProcessor = cloneFileProcessor;
             this.manifestBuilder = manifestBuilder;
         }
 
@@ -44,7 +41,7 @@
                     {
                         var clonedPath = Path.Combine(result.Path, file);
 
-                        this.cloneFileProcessor.Process(Path.Combine(package.Path, file), clonedPath);
+                        IoHelper.CopyFile(Path.Combine(package.Path, file), clonedPath);
 
                         files.Add(clonedPath);
                     });

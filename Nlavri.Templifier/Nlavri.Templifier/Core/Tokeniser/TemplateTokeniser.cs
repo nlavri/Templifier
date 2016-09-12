@@ -1,30 +1,27 @@
-namespace Nlavri.Templifier.Impl.Packager.Tokeniser
+namespace Nlavri.Templifier.Core.Tokeniser
 {
     #region Using Directives
 
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Interfaces.Packager.Processors;
-    using Interfaces.Packager.Tokeniser;
+    using Processors;
 
     #endregion
 
-    public class TemplateTokeniser : ITemplateTokeniser
+    public class TemplateTokeniser
     {
-        private readonly IFileContentProcessor fileContentProcessor;
-        private readonly IRenameFileProcessor renameFileProcessor;
+        private readonly FileContentProcessor fileContentProcessor;
 
-        public TemplateTokeniser(IRenameFileProcessor renameFileProcessor, IFileContentProcessor fileContentProcessor)
+        public TemplateTokeniser(FileContentProcessor fileContentProcessor)
         {
-            this.renameFileProcessor = renameFileProcessor;
             this.fileContentProcessor = fileContentProcessor;
         }
 
         public void TokeniseDirectoryAndFilePaths(string file, Dictionary<string, string> tokens)
         {
             var tokenisedName = Replace(tokens, file);
-            this.renameFileProcessor.Process(file, tokenisedName);
+            IoHelper.RenameFile(file, tokenisedName);
         }
 
         public void TokeniseFileContent(string file, Dictionary<string, string> tokens)

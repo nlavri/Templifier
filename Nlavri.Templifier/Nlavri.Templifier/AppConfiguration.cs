@@ -1,33 +1,34 @@
 ﻿namespace Nlavri.Templifier
 {
+    using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
 
-    #region Using Directives
-
-    
-
-    #endregion
-
-    public class AppConfiguration
+    public static class AppConfiguration
     {
-        public string GetDirectoryExclusions()
+        public static IList<string> GetDirectoryExclusions()
         {
-            return this.GetAppSetting("DirectoryExclusions");
+            return ParseList(GetAppSetting("DirectoryExclusions"));
         }
 
-        public string GetFileExclusions()
+        public static IList<string> GetFileExclusions()
         {
-            return this.GetAppSetting("FileExclusions");
+            return ParseList(GetAppSetting("FileExclusions"));
         }
 
-        public string GetTokeniseFileExclusions()
+        public static IList<string> GetTokeniseFileExclusions()
         {
-            return this.GetAppSetting("TokeniseFileExclusions");
+            return ParseList(GetAppSetting("TokeniseFileExclusions"));
         }
 
-        private string GetAppSetting(string settingName)
+        private static string GetAppSetting(string settingName)
         {
-            return ConfigurationManager.AppSettings[settingName] ?? string.Empty;
+            return ConfigurationManager.AppSettings[settingName];
+        }
+
+        private static IList<string> ParseList(string commaSeparatedString)
+        {
+            return string.IsNullOrEmpty(commaSeparatedString) ? new List<string>() : commaSeparatedString.Split(";".ToCharArray()).ToList();
         }
     }
 }

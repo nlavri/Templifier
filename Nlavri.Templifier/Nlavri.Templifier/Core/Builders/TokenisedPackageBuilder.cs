@@ -1,4 +1,4 @@
-﻿namespace Nlavri.Templifier.Impl.Packager.Builders
+﻿namespace Nlavri.Templifier.Core.Builders
 {
     #region Using Directives
 
@@ -8,9 +8,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using Interfaces.Packager.Filters;
-    using Interfaces.Packager.Processors;
-    using Packages;
+    using Processors;
 
     #endregion
 
@@ -18,23 +16,17 @@
     {
         #region Fields
 
-        private readonly IBinaryFileFilter binaryFileFilter;
         private readonly ManifestBuilder manifestBuilder;
-        private readonly IFileContentProcessor fileContentProcessor;
-        private readonly IRenameFileProcessor renameFileProcessor;
+        private readonly FileContentProcessor fileContentProcessor;
 
         #endregion
 
         public TokenisedPackageBuilder(
             ManifestBuilder manifestBuilder,
-            IFileContentProcessor fileContentProcessor,
-            IRenameFileProcessor renameFileProcessor,
-            IBinaryFileFilter binaryFileFilter)
+            FileContentProcessor fileContentProcessor)
         {
             this.manifestBuilder = manifestBuilder;
             this.fileContentProcessor = fileContentProcessor;
-            this.binaryFileFilter = binaryFileFilter;
-            this.renameFileProcessor = renameFileProcessor;
         }
 
         public Package Tokenise(Package package, Dictionary<string, string> tokens)
@@ -70,7 +62,11 @@
 
         private void TokeniseFileContent(Package package, Dictionary<string, string> tokens)
         {
-            var processableFiles = this.binaryFileFilter.Filter(package.Manifest.Files);
+            var processableFiles =
+                package.Manifest.Files.Where(
+                    file =>
+                        !AppConfiguration.GetTokeniseFileExclusions()
+                            .Contains((Path.GetExtension(file) ?? string.Empty).ToLowerInvariant())).ToList();
 
             Parallel.ForEach(
                 processableFiles,
@@ -92,7 +88,7 @@
                 {
                     var tokenisedName = Replace(tokens, file);
                     tokenisedName = this.RebaseToTemplatePath(package, tokenisedName, destinationPackage.Path);
-                    this.renameFileProcessor.Process(file, tokenisedName);
+                    IoHelper.RenameFile(file, tokenisedName);
                     manifestFiles.Add(tokenisedName);
                 });
             destinationPackage.Manifest.Files = manifestFiles.ToList();
