@@ -2,7 +2,9 @@ Templifier
 ==================================
 
 Lightweight and portable tool that allows you to template a solution.
-Based on and inspired by https://github.com/endjin/Templify
+
+Based on and inspired by https://github.com/endjin/Templify 
+but doesn't require installation and use nuget-only 3-rd party referenes.
 
 Create Package:
 
