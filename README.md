@@ -1,7 +1,15 @@
 Templifier
 ==================================
 
-Lightweight and portable tool that allows you to template a solution.
+Lightweight and portable tool that allows you to create a template package.
+Created to automate a process of generating Visual Studio solutions. Or any other IDE projects or arbitrary file sets.
+
+For example: 
+You create VS solution with all neccessary projects (web/logic/data), all references etc.
+Then you specify a token to replace (usually a root namespace) and create a package with the tool. 
+Deploy an number of specific solutions in a moment.
+
+Can be useful for microservices etc.
 
 Based on and inspired by https://github.com/endjin/Templify 
 but doesn't require installation and uses nuget-only 3-rd party references.
